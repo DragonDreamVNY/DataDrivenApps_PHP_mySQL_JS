@@ -7,7 +7,7 @@
 <!-- 
 	PHP Comments must be contained inside the PHP script tags
  -->
-<h1>Web Applications - PHP</h1> 
+<h1>Web Applications - PHP</h1>  
  
 <!--START of PHP Block-->
 <?php

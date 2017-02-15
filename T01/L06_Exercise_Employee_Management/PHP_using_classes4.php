@@ -10,7 +10,7 @@
 <?php 
 echo "<h3>Reconstruct Objects from a CSV data file</h3>";
 $group=array();  //empty array to contain person objects
-$dataFile = fopen("persistence/person_data.csv", "r") or die("Unable to open file!");
+$dataFile = fopen("data/person_data.csv", "r") or die("Unable to open file!");
 $i=0;  //index for the array
 while(!feof($dataFile)) {
   $csv=fgets($dataFile); //read a line from the CSV file

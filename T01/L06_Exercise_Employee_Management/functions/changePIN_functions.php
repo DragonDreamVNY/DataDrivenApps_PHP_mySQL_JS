@@ -1,5 +1,6 @@
 <?php include("../classlib/Person.php");?>
 <?php include("../classlib/Employee.php");?>
+<?php include("functions/ChromePhp.php");?>
 
 <!DOCTYPE html>
 <html>
@@ -25,37 +26,20 @@
   <?php
 // define variables and set to empty values
 //$name = $pps_Nr = $personalID_Nr = $dob_In = "";
-  $deleteMe = ""; //the line you want to delete
+  $pinChecker = 0; //init the PIN you want to delete
   $data = file("../data/employee_data.csv");
   $outPut = array();
   $thisEmployee = ""; //to get values from Employee object in current loop of the Button pressed
 
 
-  if ( isset($_POST['deleteSelected']) )  {  //check that the delete button has been pressed
-    //$thisEmployee = Employee->get_name(); // gets current value taken from this iteration of the foreach in deleteEmployees
+  if ( isset($_POST['changePIN']) )  {  //check that the Change PIN button has been pressed
+    $thisEmployee = current($employee); // gets current value taken from this iteration of the foreach in deleteEmployees
     //$thisEmployee = new Employee($name, $pps_Nr, $personalID_Nr, $dob_In); //hello new guy, details incoming..
+    echo "Employee's PPSN: " . $thisEmployee->get_ppsn()."<br>";
 
-    $dataFile = fopen("../data/employee_data.csv", "w+") or die("Unable to open file!");
-
-    $group = array();  // array to contain each Employee object
-    $i = 0;  //index for the array
-    while( !feof($dataFile) ) {
-      $csv = fgets($dataFile); //read a line from the CSV file
-      if( !feof($dataFile) ) { //make sure not at end
-        $employeeProperties = explode(",",$csv); //parse values to an array
-        $group[$i] = new Employee( $employeeProperties[0], $employeeProperties[1], $employeeProperties[2], $employeeProperties[3] );//create new employee objects with Name, PPSN, PIN, DOB
-        $i++;
-      if ()
-      }
-    } // lines are all read AGAIN, but for use with comparison...?
 
     $deleteMe.= $thisEmployee->get_name().",".$thisEmployee->get_ppsn().",".$newEmployee->get_pin().','.$newEmployee->get_dob()."\n";
 
-    foreach($data as $line) {
-        if(trim($line) != $deleteMe){ //trim removes whitespace or ,specified charlist
-           $outPut[] = $line; //store every line except the one being deleted
-        }
-    } //end store lines without the one being Deleted
 
   $dataFile = fopen("../data/employee_data.csv", "w+") or die("Unable to open file!");
   flock($dataFile, LOCK_EX);
@@ -65,8 +49,18 @@
   flock($dataFile, LOCK_UN);
   fclose($dataFile);
 
+
+  //check the employees PIN number
+  if($employee1->verify_pin($pinChecker)){
+  echo "Employee's PIN check:OK <br>";
+  }
+  else {
+  echo "Employee's PIN check:FAIL <br>";
+  }
+
+
   echo "<hr>";
-  echo('<p> Deleted  : '.$deleteMe.'</p>');
+  echo('<p> Changed PIN  : '.$deleteMe.'</p>');
   echo "<p>Done! 'employee_data.csv' successfully updated. Employee Deleted</p>";
 } // end if
 else { //the form has not been submitted

@@ -37,13 +37,12 @@
       $dataFile = fopen("data/employee_data.csv", "r") or die( "Unable to open file!" );
       $i = 0;  //index for the array
       while( !feof($dataFile) ) {
-        $csv = fgetcsv($dataFile); //read a  returns the CSV fields in an array
+        $csv = fgets($dataFile);
         print_r($csv);
-
         if( !feof($dataFile) ) { //make sure not at end
-      	//   $employeeProperties = explode(",",$csv); //parse values to an array
-          $group[$i] = new Employee( $employeeProperties[0], $employeeProperties[1], $employeeProperties[2], $employeeProperties[3] );//create new employee objects with Name, PPSN, PIN, DOB
-      	  $i++;
+      	   $employeeProperties = explode(",",$csv); //parse values to an array
+           $group[$i] = new Employee( $employeeProperties[0], $employeeProperties[1], $employeeProperties[2], $employeeProperties[3] );//create new employee objects with Name, PPSN, PIN, DOB
+    	     $i++;
         }
 
       } //end While
@@ -52,9 +51,11 @@
       //dump the array of Employee objects
       print_r($group);
 
+
       echo '<table border="1" class = "employeeTable">';
-      echo '<tr> <th>NAME</th> <th>PPSN</th> <th>PIN</th> <th>D.O.B.</th> </tr>';
-      ChromePhp::log("Array contents: ", $group);
+      echo '<tr> <th>NAME</th> <th>PPSN</th> <th>PIN</th> <th>D.O.B.</th> </tr>'; //column headers
+
+      $btnID = 0;
       foreach ( $group as $employee ) {
       	echo '<tr>
           <td>'.$employee->get_name().'</td>
@@ -62,9 +63,10 @@
           <td>'.$employee->get_pin().'</td>
           <td>'.$employee->get_dob().'</td>
           <td><form action="functions/deleteEmployee_functions.php" method="post">
-            <button type="submit" class="btn btn-danger" name="deleteSelected"> Delete This </button>
+            <button id = btn'.$btnID. ' type="submit" class="btn btn-danger" name="deleteSelected"> Delete This </button>
           </form></td>
           </tr>';
+          $btnID++;
       }
       echo '</table>';
     ?>

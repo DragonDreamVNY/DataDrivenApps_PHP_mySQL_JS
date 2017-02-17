@@ -1,6 +1,8 @@
 <?php include("classlib/Person.php"); //include the class library ?>
 <?php include("classlib/Employee.php"); //include the class library ?>
 <?php include("functions/ChromePhp.php");?>
+<?php include("functions/sanitize_function.php");?>
+
 <?php
   ChromePhp::log('Hello console from ChromePHP!');
   ChromePhp::log($_SERVER);
@@ -39,12 +41,9 @@
       while( !feof($dataFile) ) {
         $csv = fgets($dataFile);
         print_r($csv);
-        if( !feof($dataFile) ) { //make sure not at end
       	   $employeeProperties = explode(",",$csv); //parse values to an array
            $group[$i] = new Employee( $employeeProperties[0], $employeeProperties[1], $employeeProperties[2], $employeeProperties[3] );//create new employee objects with Name, PPSN, PIN, DOB
     	     $i++;
-        }
-
       } //end While
       fclose( $dataFile ); //close the data file
 
@@ -56,16 +55,26 @@
       echo '<tr> <th>NAME</th> <th>PPSN</th> <th>PIN</th> <th>D.O.B.</th> </tr>'; //column headers
 
       $btnID = 0;
-      foreach ( $group as $employee ) {
-      	echo '<tr>
-          <td>'.$employee->get_name().'</td>
-          <td>'.$employee->get_ppsn().'</td>
-          <td>'.$employee->get_pin().'</td>
-          <td>'.$employee->get_dob().'</td>
-          <td><form action="functions/deleteEmployee_functions.php" method="post">
-            <button id = btn'.$btnID. ' type="submit" class="btn btn-danger" name="deleteSelected"> Delete This </button>
+      foreach ( $group as $employee ) { //loop through the array of Employee objects
+        $thisEmployeeName = $employee->get_name();
+        $thisEmployeePPSN = $employee->get_ppsn();
+        $thisEmployeePIN = $employee->get_pin();
+        $thisEmployeeDOB = $employee->get_dob();
+
+        //note the use of double quotes to evaluate variable
+        echo "<tr>
+          <td>$thisEmployeeName</td>
+          <td>$thisEmployeePPSN</td>
+          <td>$thisEmployeePIN</td>
+          <td>$thisEmployeeDOB</td>
+          <td><form action='functions/deleteEmployee_functions.php' method='post'>
+            <input type='hidden' name='name' value='$thisEmployeeName' >
+            <input type='hidden' name='ppsn' value='$thisEmployeePPSN' >
+            <input type='hidden' name='pin' value='$thisEmployeePIN' >
+            <input type='hidden' name='dob' value='$thisEmployeeDOB' >
+            <button id = btn'.$btnID. ' type='submit' class='btn btn-danger' name='deleteSelected'> Delete This </button>
           </form></td>
-          </tr>';
+          </tr>";
           $btnID++;
       }
       echo '</table>';

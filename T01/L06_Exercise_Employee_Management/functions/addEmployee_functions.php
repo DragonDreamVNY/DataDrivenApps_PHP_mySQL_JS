@@ -1,7 +1,6 @@
 <?php include("../classlib/Person.php");?>
 <?php include("../classlib/Employee.php");?>
-<?php include 'ChromePhp.php';?>
-
+<?php include("ChromePhp.php");?>
 <?php
 ChromePhp::log('Hello console from ChromePHP!');
 ChromePhp::log($_SERVER);
@@ -10,7 +9,7 @@ ChromePhp::log($_SERVER);
 <!DOCTYPE html>
 <html>
 <head>
-  <title>EMS - Add New Employees</title>
+  <title>EMS - Employees</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
@@ -32,19 +31,14 @@ ChromePhp::log($_SERVER);
   <?php
 
 // define variables and set to empty values
-$name = $pps_Nr = $personalID_Nr = $dob_In = "";
+$name = $pps_Nr = $personalID_Nr = $dob_In = ""; //init
+$addEmployeePOST = sanitizeString( $_POST['newEmployeeData_submitted'] );
 
-if ( isset($_POST['newEmployeeData_submitted']) )  {  //check that the button has been pressed
-	$name = $_POST['name'];
-	$pps_Nr = $_POST['pps_Nr'];
-	$personalID_Nr = $_POST['personalID_Nr'];
-	$dob_In = $_POST['dob_In'];
-
-
-	//check name is set
-    if($name ==''){
-        $error[] = 'Name is required';
-    }
+if ( isset($addEmployeePOST) )  {  //check that the button has been pressed
+	$name = sanitizeString( $_POST['name'] );
+	$pps_Nr = sanitizeString( $_POST['pps_Nr'] );
+	$personalID_Nr = sanitizeString( $_POST['personalID_Nr'] );
+	$dob_In = sanitizeString( $_POST['dob_In'] );
 
 		$newEmployee = new Employee($name, $pps_Nr, $personalID_Nr, $dob_In); //hello new guy, details incoming..
 		//put the object(s) into an array
@@ -52,42 +46,41 @@ if ( isset($_POST['newEmployeeData_submitted']) )  {  //check that the button ha
 
     //this wont work if the property is not public - so its commented out
     //echo "Try to access the object property directly: ".$person1->name;
-    $csv = ""; //empty String
+    $csvOut = ""; //empty String
 //  foreach ($newGuyArray as $newEmployee){
-      //get the properties of each object , put into CSV
-    $csv.= "\n".$newEmployee->get_name().",".$newEmployee->get_ppsn().",".$newEmployee->get_pin().','.$newEmployee->get_dob()."\n";
+      //get the properties of each object , put into CSV, either of the two following Works.
+    $csvOut = "\n".$newEmployee->get_name().','.$newEmployee->get_ppsn().','.$newEmployee->get_pin().','.$newEmployee->get_dob();
+    //$csv = "\n".$name.','.$pps_Nr.','.$personalID_Nr.','.$dob_In;
     //}
-    echo('This is the new guy : '.$csv);
-    //Persist the object properties to a CSV file
+
+    //Persist the object properties to a CSV file, 'a+' moves pointer to end of file to Append
     $dataFile = fopen("../data/employee_data.csv", "a+") or die("Unable to open file!");
     // read every line in the file...
     // while( !feof($dataFile) ){
     // 	$line = fgets($dataFile);
     // }
     // fseek($dataFile, 0, SEEK_END); //move file pointer to end
-    fwrite($dataFile, $csv) or die("Could not write to file");
+    fwrite($dataFile, $csvOut) or die("Could not write to file");
     fclose($dataFile);
+    echo('Welcome new Emplpoyee : '.$csvOut);
     echo "<hr>";
     echo "<p>Done! 'person_data.csv' successfully updated</p>";
-
-
-}
-else { //the form has not been submitted
-    echo "<p>Please enter some values in the form.</p>";
-}
-
+  }
+  else { //the form has not been submitted
+      echo "<p>Please enter some values in the form.</p>";
+  }
 
 function sanitizeString($var){
-	if ( get_magic_quotes_gpc() )  $var = stripcslashes($var);
-	$var = htmlentities($var);
-	$var = strip_tags($var);
-	return $var;
+  if ( get_magic_quotes_gpc() )  $var = stripcslashes($var);
+  $var = htmlentities($var);
+  $var = strip_tags($var);
+  return $var;
 } //end Sanitize String
 
 function sanitizeMySQL($var){
-	$var = mysql_real_escape_string($var);
-	$var = sanitizeString($var);
-	return $var;
+  $var = mysql_real_escape_string($var);
+  $var = sanitizeString($var);
+  return $var;
 } // end sanitize MySQL
 
 ?>

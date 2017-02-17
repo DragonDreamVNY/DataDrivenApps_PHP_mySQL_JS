@@ -38,12 +38,11 @@
       $i = 0;  //index for the array
       while( !feof($dataFile) ) {
         $csv = fgets($dataFile); //read a line from the CSV file
-        if( !feof($dataFile) ) { //make sure not at end
-      	  $employeeProperties = explode(",",$csv); //parse values to an array
-      	  $group[$i] = new Employee( $employeeProperties[0], $employeeProperties[1], $employeeProperties[2], $employeeProperties[3] );//create new employee objects with Name, PPSN, PIN, DOB
-      	  $i++;
-
-        }
+        //if( !feof($dataFile) ) { //make sure not at end
+    	  $employeeProperties = explode(",",$csv); //parse values to an array
+    	  $group[$i] = new Employee( $employeeProperties[0], $employeeProperties[1], $employeeProperties[2], $employeeProperties[3] );//create new employee objects with Name, PPSN, PIN, DOB
+    	  $i++;
+        //}
       } //end While
       fclose( $dataFile ); //close the data file
 
@@ -65,11 +64,6 @@
     ?>
 
   </div>
-
-
-<div id= "addFormStatus">
-
-</div>
 
 </div> <!--END CONTAINER-->
 <!-- Latest compiled and minified JavaScript -->

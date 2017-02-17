@@ -41,68 +41,7 @@
 </div> <!--end Container-->
 
 
-<?php
 
-// define variables and set to empty values
-$name = $pps_Nr = $personalID_Nr = $dob_In = "";
-
-if ( isset($_POST['newEmployeeData_submitted']) )  {  //check that the button has been pressed
-$name = $_POST['name'];
-$pps_Nr = $_POST['PPS_Number'];
-$personalID_Nr = $_POST['Personal_ID_Nr'];
-$dob_In = $_POST['dob_In'];
-
-
-//check name is set
-  if($name ==''){
-      $error[] = 'Name is required';
-  }
-
-  $newEmployee = new Employee($name, $pps_Nr, $personalID_Nr, $dob_In); //hello new guy, details incoming..
-  //put the object(s) into an array
-//		$newGuyArray = array($newEmployee);
-
-  //this wont work if the property is not public - so its commented out
-  //echo "Try to access the object property directly: ".$person1->name;
-  $csv = ""; //empty String
-//  foreach ($newGuyArray as $newEmployee){
-    //get the properties of each object , put into CSV
-  $csv.=$newEmployee->get_name().",".$newEmployee->get_ppsn().",".$newEmployee->get_pin().$newEmployee->get_dob()."\n";
-  //}
-  echo('This is the new guy : '.$csv);
-  //Persist the object properties to a CSV file
-  $dataFile = fopen("data/employee_data.csv", "a+") or die("Unable to open file!");
-  // read every line in the file...
-  // while( !feof($dataFile) ){
-  // 	$line = fgets($dataFile);
-  // }
-  // fseek($dataFile, 0, SEEK_END); //move file pointer to end
-  fwrite($dataFile, $csv) or die("Could not write to file");
-  fclose($dataFile);
-  echo "<hr>";
-  echo "<p>Done! 'person_data.csv' successfully updated</p>";
-
-
-}
-else { //the form has not been submitted
-  echo "<p>Please enter some values in the form.</p>";
-}
-
-
-function sanitizeString($var){
-if ( get_magic_quotes_gpc() )  $var = stripcslashes($var);
-$var = htmlentities($var);
-$var = strip_tags($var);
-return $var;
-} //end Sanitize String
-
-function sanitizeMySQL($var){
-$var = mysql_real_escape_string($var);
-$var = sanitizeString($var);
-return $var;
-} // end sanitize MySQL
-
-?>
 
 
 <!-- Latest compiled and minified JavaScript -->

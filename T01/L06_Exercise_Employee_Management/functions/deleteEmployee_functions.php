@@ -41,47 +41,47 @@
     $deleteMe = $name.','.$ppsn.','.$pin.','.$dob;
     echo '<p>To be deleted : '.$deleteMe.'</p>'; // hidden variables come from deleteEmployees.php form
 
-/*
-    // Read Objects from CSV data file, clears contents, Write to it later
-    $dataFile = fopen("../data/employee_data.csv", "w+") or die("Unable to open file!");
-    flock($dataFile, LOCK_EX); //LOCK makes sure only one resource/user is updating this file
+      // Read Objects from CSV data file, clears contents, Write to it later
+      $dataFile = fopen("../data/employee_data.csv", "w+") or die("Unable to open file!");
+      flock($dataFile, LOCK_EX); //LOCK makes sure only one resource/user is updating this file
 
-    // $group = array();  // empty array to contain each Employee object
-    $i = 0;  //index for the array
-    while( !feof($dataFile) ) {
-      $csvLines = fgets($dataFile); //read a line from the CSV file
-      if( !feof($dataFile) ) { //make sure not at end
-        if( $csvLines != $deleteMe ) {
-          //$employeeProperties = explode(",",$csvLines); //parse values to an array
-          //$group[$i] = new Employee( $employeeProperties[0], $employeeProperties[1], $employeeProperties[2], $employeeProperties[3] );// create new employee objects with Name, PPSN, PIN, DOB
+      // $group = array();  // empty array to contain each Employee object
+      $i = 0;  //index for the array
+      while( !feof($dataFile) ) {
+        $csvLines = fgets($dataFile); //read a line from the CSV file
+        if( !feof($dataFile) ) { //make sure not at end
+          if( $csvLines != $deleteMe ) {
+            //$employeeProperties = explode(",",$csvLines); //parse values to an array
+            //$group[$i] = new Employee( $employeeProperties[0], $employeeProperties[1], $employeeProperties[2], $employeeProperties[3] );// create new employee objects with Name, PPSN, PIN, DOB
 
-          $outPut .= $csvLines;  //store every line in the output String except one being deleted. Possibly could have used Arrays
+            $outPut .= $csvLines;  //store every line in the output String except one being deleted. Possibly could have used Arrays
+          }
+          $i++;
         }
-        $i++;
-      }
-    } //end While
-*/
-/*
-    // using Arrays...
-    foreach($data as $line) {
-        if(trim($line) != $deleteMe){ //trim removes whitespace or ,specified charlist
-           $outPut[] .= $line; //store every line in the array except one being deleted
-        }
-    } //end store lines without the one being Deleted
+      } //end While
 
-  foreach($outPut as $line) {
-     fwrite($dataFile, $line) or die("Could not write to file");
-  }
-*/
-/*
-  fwrite($dataFile, $outPut);
-  flock($dataFile, LOCK_UN);
-  fclose($dataFile);
-*/
-  echo "<hr>";
-  echo('<p> Deleted  : '.$deleteMe.'</p>');
-  echo "<p>Done! 'employee_data.csv' successfully updated. Employee Deleted</p>";
-} // end if Delete Pressed
+  /*
+      // using Arrays...
+      foreach($data as $line) {
+          if(trim($line) != $deleteMe){ //trim removes whitespace or ,specified charlist
+             $outPut[] .= $line; //store every line in the array except one being deleted
+          }
+      } //end store lines without the one being Deleted
+
+    foreach($outPut as $line) {
+       fwrite($dataFile, $line) or die("Could not write to file");
+    }
+  */
+
+    fwrite($dataFile, $outPut);
+    flock($dataFile, LOCK_UN);
+    fclose($dataFile);
+
+    echo "<hr>";
+    echo('<p> Deleted  : '.$deleteMe.'</p>');
+    echo "<p>Done! 'employee_data.csv' successfully updated. Employee Deleted</p>";
+
+} // end if DeleteSelected Pressed
 else { //the form has not been submitted
     echo "<p>Error occured. Couldn't Delete</p>";
 }
